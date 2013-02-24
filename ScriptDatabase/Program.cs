@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.SqlServer.Management.Smo;
-using Microsoft.SqlServer.Management.Common;
 
 namespace ScriptDatabase
 {
@@ -19,8 +13,5 @@ namespace ScriptDatabase
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
         }
-
-
-
     }
 }

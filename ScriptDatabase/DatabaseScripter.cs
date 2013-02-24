@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.Smo;
 
@@ -30,6 +27,8 @@ namespace ScriptDatabase
                 {
                     Options = { 
                                 ScriptDrops = false, 
+                                ScriptData = false,
+                                AllowSystemObjects = false,
                                 WithDependencies = false, 
                                 Indexes = true, 
                                 DriAllConstraints = true
@@ -43,10 +42,7 @@ namespace ScriptDatabase
             Directory.CreateDirectory(_basePath);
             foreach (Database database in _server.Databases)
             {
-                if (database.Name == "AdventureWorks2008")
-                {
-                    ScriptDatabase(database);
-                }
+                ScriptDatabase(database);
             }
         }
 
@@ -73,25 +69,12 @@ namespace ScriptDatabase
 
             foreach (T obj in objects)
             {
-                if (IsSystemObject(obj)) continue;
                 Console.WriteLine("scripting {0}: {1}", type, obj.Name);
 
                 var fileName = Path.Combine(scriptDirectory, obj.Name + ".sql");
                 var script = _scripter.Script(new Urn[] { obj.Urn });
                 File.WriteAllLines(fileName, script.Cast<string>());
             }              
-        }
-
-        public static bool IsSystemObject(object objectToCheck)
-        {
-            const string propertyName = "IsSystemObject";
-            var type = objectToCheck.GetType();
-
-            var isSystemObject = type.GetProperty(propertyName);
-
-            if (isSystemObject == null) return false;
-
-            return isSystemObject.GetValue(objectToCheck) as bool? == true;
         }
     }
 }
